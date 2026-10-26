@@ -1,0 +1,90 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="custom-toolbar">
+    <ion-title class="app-title">
+      <ion-icon name="wallet-outline"></ion-icon>
+      Personal Expense Tracker
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding custom-content">
+  <!-- Bütçe Özet Kartları -->
+  <div class="summary-cards">
+    <div class="summary-card total">
+      <span class="card-label">Toplam Harcama</span>
+      <h2 class="card-value">{{ toplam }} TL</h2>
+    </div>
+    <div class="summary-card count">
+      <span class="card-label">İşlem Sayısı</span>
+      <h2 class="card-value">{{ liste.length }} adet</h2>
+    </div>
+  </div>
+
+  <!-- Harcama Ekleme Formu -->
+  <div class="form-container">
+    <h3 class="section-title">Yeni Harcama Ekle</h3>
+
+    <ion-item class="custom-input-item">
+      <ion-input label="Harcama Adı" labelPlacement="floating" [(ngModel)]="isim"
+        placeholder="Örn: Market Alışverişi"></ion-input>
+    </ion-item>
+
+    <div class="form-row">
+      <ion-item class="custom-input-item flex-1">
+        <ion-input label="Tutar (TL)" labelPlacement="floating" type="number" [(ngModel)]="fiyat"
+          placeholder="0.00"></ion-input>
+      </ion-item>
+
+      <ion-item class="custom-input-item flex-1">
+        <ion-select label="Kategori" labelPlacement="floating" [(ngModel)]="kategori" placeholder="Seç">
+          <ion-select-option value="Gıda">🛒 Gıda</ion-select-option>
+          <ion-select-option value="Fatura">⚡ Fatura</ion-select-option>
+          <ion-select-option value="Diğer">📦 Diğer</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </div>
+
+    <ion-button expand="block" (click)="ekle()" class="add-btn">
+      <ion-icon slot="start" name="add-circle-outline"></ion-icon>
+      Harcamayı Kaydet
+    </ion-button>
+  </div>
+
+  <!-- Harcama Geçmişi Listesi -->
+  <div class="list-section">
+    <h3 class="section-title">Harcama Geçmişi</h3>
+
+    <div *ngIf="!liste || liste.length === 0" class="empty-state">
+      <div class="empty-icon">📊</div>
+      <p>Henüz bir harcama kaydı bulunmuyor.</p>
+      <span>Yukarıdaki formu kullanarak ilk harcamanızı ekleyin.</span>
+    </div>
+
+    <ion-list *ngIf="liste && liste.length > 0" class="custom-list">
+      <ion-item-sliding *ngFor="let h of liste; let i = index">
+        <ion-item lines="none" class="expense-item">
+          <div class="category-badge" [ngClass]="h.kategori?.toLowerCase()">
+            <span *ngIf="h.kategori === 'Gıda'">🛒</span>
+            <span *ngIf="h.kategori === 'Fatura'">⚡</span>
+            <span *ngIf="h.kategori === 'Diğer'">📦</span>
+          </div>
+
+          <ion-label class="expense-details">
+            <h2>{{ h.isim }}</h2>
+            <p>{{ h.kategori }}</p>
+          </ion-label>
+
+          <div slot="end" class="expense-amount">
+            -{{ h.fiyat }} TL
+          </div>
+        </ion-item>
+
+        <ion-item-options side="end">
+          <ion-item-option color="danger" (click)="sil(i)" class="delete-option">
+            <ion-icon name="trash-outline"></ion-icon> Sil
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+  </div>
+</ion-content>
